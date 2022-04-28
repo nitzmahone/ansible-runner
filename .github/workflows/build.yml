@@ -7,7 +7,7 @@ on:
         description: API token for PyPI uploads
         required: true
       pypi_repo_url:
-        description: PyPI repo url (default https://upload.pypi.org/legacy/)
+        description: PyPI repo url
         required: true
         type: choice
         options:
@@ -34,7 +34,7 @@ jobs:
         python -m pip install build
 
         rm -rf dist/
-        
+
         python -m build .
 
         dist_tarballs=(dist/*.tar.gz)
@@ -47,12 +47,12 @@ jobs:
 
     - name: Upload to PyPI
       run: |
-        set -e        
+        set -e
         python -m pip install twine
-        
+
         twine upload dist/*.tar.gz dist/*.whl
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ github.events.inputs.pypi_token }}
-        TWINE_REPOSITORY_URL: ${{ github.events.inputs.pypi_repo_url }}
+        TWINE_PASSWORD: ${{ github.event.inputs.pypi_token }}
+        TWINE_REPOSITORY_URL: ${{ github.event.inputs.pypi_repo_url }}
         TWINE_NON_INTERACTIVE: '1'
