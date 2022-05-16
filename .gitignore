@@ -32,3 +32,5 @@ venv/
 # Demo files
 /demo/artifacts
 /demo/daemon.log
+
+.idea/
