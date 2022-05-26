@@ -1,0 +1,17 @@
+name: Matrix Transform
+description: Transform a YAML string matrix and output as JSON
+inputs:
+  matrix_yaml:
+    description: input matrix as YAML string literal
+    required: true
+outputs:
+  matrix:
+    description: output matrix in single-line JSON format
+    value: ${{ steps.matrix_maker.outputs.matrix }}
+runs:
+  using: composite
+  steps:
+  - id: matrix_maker
+    shell: bash
+    run: |
+      python ./matrix_maker.py yaml-to-matrix --output-var matrix <<< $INPUT_MATRIX_YAML

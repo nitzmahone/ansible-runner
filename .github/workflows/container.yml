@@ -1,0 +1,72 @@
+on:
+  push:
+
+jobs:
+#  matrix_maker:
+#    runs-on: ubuntu-22.04
+#    outputs:
+#      matrix: ${{ steps.transform_matrix.outputs.matrix }}
+#    env:
+#      matrix_yaml: |
+#    steps:
+#    - id: transform_matrix
+#      uses: ./.github/actions/matrix_tools
+#      with:
+#        matrix_yaml: |
+#          arch: [x86_64, aarch64]
+#          base_image: [quay.io/ansible/python-base]
+#          core_version_ref: [devel, stable-2.11, stable-2.12, stable-2.13]
+#
+#  # tags
+#    {runner_version: devel|x.y}_core_{core_version: devel|x.y}
+#    devel
+#    latest
+#    2.2-core_devel
+#    2.2.1-core_2.13
+#    latest-core_2.13
+#    devel-core_2.11
+#    latest-core_devel
+#    devel-core_devel
+#
+#
+#
+#  make_base_tag:
+#    runs-on: ubuntu-22.04
+#    steps:
+#    - run: |
+#
+#
+
+  arch_build:
+    name: arch-specific build ${{ matrix.arch }} core ${{ matrix.core_version_ref }}
+    runs-on: ubuntu-22.04
+#    needs: matrix_maker
+    strategy:
+      matrix:
+        arch: [ x86_64, aarch64 ]
+        base_image: [ quay.io/ansible/python-base ]
+        core_version_ref: [ stable-2.11, stable-2.12, stable-2.13 ]
+        include:
+        - core_version_ref: devel
+          base_image: quay.io/ansible/python-base:py39_stream8
+          arch: x86_64
+        - core_version_ref: devel
+          base_image: quay.io/ansible/python-base:py39_stream8
+          arch: aarch64
+
+    steps:
+    - id: dump
+      run: |
+        MATRIXDUMP=$(cat <<'EOF'
+        ${{ toJSON(matrix) }}
+        EOF
+        )
+        
+        echo "Matrix dump:\n $MATRIXDUMP" >> $GITHUB_STEP_SUMMARY
+
+#  manifest_builds:
+#    runs-on: ubuntu-22.04
+#    needs: arch_build
+#    steps:
+#    - run: |
+#        echo "combining from ${{ needs.arch_build.outputs.vref }}"

@@ -24,6 +24,7 @@ rpm-build/
 
 # Environments
 .env
+.idea/
 .python-version
 .tox/
 .venv
